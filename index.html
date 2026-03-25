@@ -144,12 +144,7 @@ body {
   flex-wrap: wrap;
   gap: 8px;
 }
-.count-pill {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.06em;
-}
+
 .clear-btn {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
@@ -331,7 +326,6 @@ body {
   .filter-label { min-width: 54px; font-size: 9px; }
   .grid         { padding: 20px 24px 48px; gap: 12px; }
   .page-footer  { padding: 20px 24px; }
-  .count-pill   { display: none; }
 }
 </style>
 </head>
@@ -366,7 +360,6 @@ body {
     <div id="topic-pills" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
   </div>
   <div class="toolbar-footer">
-    <span class="count-pill" id="count"></span>
     <button class="clear-btn" id="clear-btn" onclick="clearAll()">✕ Clear all filters</button>
   </div>
 </div>
@@ -384,66 +377,76 @@ body {
 const LI = `<svg class="li-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
 
 const people = [
-  { name:"Henrik Heßlau",         status:"exploring", interests:["AI"],                                               skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/henrik-hesslau" },
-  { name:"Tommaso Topa",           status:"joining",   interests:["Robotics","Healthcare","AI"],                       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/tommasotopa" },
-  { name:"Mahsa",                  status:"exploring", interests:["Sustainability","Digital Twin","Real Estate"],      skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/mahsa-amiri-moghaddam" },
-  { name:"Aloka Kumar Sahu",       status:"exploring", interests:["Sustainability","Climate Tech"],                    skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/alokakumarsahu01" },
-  { name:"Dimitris Papadopoulos",  status:"exploring", interests:["Consumer Tech","Climate Tech","AI"],                skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/dimitirs-gp-papadopoulos" },
-  { name:"Marion",                 status:"idea",      interests:["FemTech"],                                         skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/mpierfitte" },
-  { name:"Ganesh Thorbole",        status:"idea",      interests:["AI","Pharma"],                                     skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/ganesh-thorbole-56a08a7a" },
-  { name:"Kunal Dhabhai",          status:"idea",      interests:["Agentic Operations Platform"],                     skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/kunaldhabhai" },
-  { name:"Antonia Steinmann",      status:"idea",      interests:["AI SaaS","ProductLens"],                           skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/antonia-steinmann-1a23b0166" },
-  { name:"Flemming",               status:"exploring", interests:["Sustainable Finance","AI"],                        skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/flemming-fischer" },
-  { name:"Marc-Lorenz Döhmer",     status:"exploring", interests:["Robotics","Heavy Industry"],                       skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/mldoehmer" },
-  { name:"Maxime Knof",            status:"idea",      interests:["Biotech","ML","Prediction Algorithms"],            skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/maxime-knof-093574193" },
-  { name:"Wynand Viljoen",         status:"exploring", interests:["AI","Venture Building","Strategy"],                skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/wynandviljoen" },
-  { name:"Danny Schwenke",         status:"idea",      interests:["AI","HealthTech","Fitness & Sports"],              skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/danny-schwenke-5385ab357" },
-  { name:"Leonard Weihe",          status:"exploring", interests:["Consumer Goods","Finance","Operations"],           skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/leonard-j-weihe" },
-  { name:"Jason Thrasher",         status:"idea",      interests:["Climate Modeling"],                                skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jasonthrasher" },
-  { name:"Giacomo Rossato",        status:"exploring", interests:["Digital Healthcare"],                              skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/giacomorossato" },
-  { name:"Gaurav",                 status:"exploring", interests:["SaaS","Fintech","Venture Capital"],                skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/gauravjha1995" },
-  { name:"Ziying Fang",            status:"idea",      interests:["AI Agent for B2B Marketing"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/ziying-fang" },
-  { name:"Hassan Taheri",          status:"exploring", interests:["AI","SaaS","Sovereign AI","GDPR Tech"],            skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/hassan-taheri-608052398" },
-  { name:"Julius",                 status:"joining",   interests:["Agentic Economy","GTM & Revenue Ops","B2B SaaS"], skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliusmichel" },
-  { name:"Shubham Verma",          status:"exploring", interests:["AI","Education","Health","Wellbeing"],             skills:["Product/UX Design","Technical/Engineering"],               linkedin:"https://linkedin.com/in/shubhamverma" },
-  { name:"Gaurav Anand",           status:"idea",      interests:["Sustainable Mobility"],                            skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/anandgrv" },
-  { name:"Yash Thadani",           status:"exploring", interests:["SaaS"],                                            skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/yashthadani" },
-  { name:"Jonathan Sueldo Guevara",status:"idea",      interests:["Gastro Optimization","AI"],                       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jonathan-sueldo-guevara-ratzeburg-1668341b4" },
-  { name:"Jonatan Kronander",      status:"exploring", interests:["Healthcare","AI"],                                 skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jonatan-kronander-58ab01b6" },
-  { name:"Koray Tekin",            status:"idea",      interests:["Design with AI"],                                  skills:["Product/UX Design","Business/Marketing"],                  linkedin:"https://linkedin.com/in/koraytekin" },
-  { name:"Alexey Bityukov",        status:"exploring", interests:["Data Intelligence","Distributed Systems","Fintech"],skills:["Technical/Engineering"],                                  linkedin:"https://linkedin.com/in/alexey-bityukov" },
-  { name:"Thinh Porrmann",         status:"exploring", interests:["Fintech","AI"],                                    skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/thinh-porrmann" },
-  { name:"Weng Ian Ng",            status:"idea",      interests:["Fashion","Tech","International Trading"],          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/wengianng" },
-  { name:"Enrico Tritto",          status:"exploring", interests:["Fintech","Sustainability"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/enricotritto" },
-  { name:"Pranshul Saxena",        status:"exploring", interests:["AI","FinTech","Enterprise SaaS"],                  skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/pranshulsaxena" },
-  { name:"Valentina Vergara",      status:"idea",      interests:["Software Engineering","Machine Learning"],         skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/valentina-vergara-stange-27598b296" },
-  { name:"Ellen Grösel",           status:"idea",      interests:["Stealth"],                                         skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/ellen-pia-grösel-" },
-  { name:"Athanasios Manios",      status:"idea",      interests:["CommunityTech"],                                   skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/athanasios-manios-3baa6625a" },
-  { name:"Sebastian Schmid",       status:"exploring", interests:["Health-Tech","AI","Data Analytics"],               skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/sebastian-florian-schmid" },
-  { name:"Gwyneth-Tyger Neumann",  status:"idea",      interests:["BeautyTech","Wellness","Fashion"],                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/gtcneumann" },
-  { name:"Georgios Zelenitsas",    status:"idea",      interests:["FinTech","AI","Defence"],                          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/giorgoszelenitsas" },
-  { name:"Santiago Sierra",        status:"exploring", interests:["AI","Robotics"],                                   skills:["Product/UX Design","Technical/Engineering"],               linkedin:"https://linkedin.com/in/santiagosierraiba" },
-  { name:"David",                  status:"idea",      interests:["Music Marketing"],                                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/david-szabados-607541334" },
-  { name:"Nikhil Bajpai",          status:"exploring", interests:["AI"],                                              skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/bajpainikhil" },
-  { name:"Daniel",                 status:"idea",      interests:["Hardware Development"],                            skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/daniel-kehr-3b0398235" },
-  { name:"Jannis Duckek",          status:"joining",   interests:["Deeptech","Climate Tech","Sustainability"],        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jannisduckek" },
-  { name:"Benjamin Kapell",        status:"idea",      interests:["IoT","Travel Tech","Hardware-Software","Mobile"],  skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/benjamin-kapell-10438a112" },
-  { name:"Juliette Gainnet",       status:"joining",   interests:["Climate Tech","Health Tech"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliette-gainnet" },
-  { name:"Leon Marco Cavallo",     status:"idea",      interests:["Sustainability","Climatetech","Machine Learning"],  skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/leon-marco-cavallo" },
-  { name:"Sophia Pettit",          status:"exploring", interests:["Social Impact","AI","Entertainment & Culture"],    skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/sophia-pettit" },
-  { name:"Malte Lindigkeit",       status:"exploring", interests:["LegalTech","Patents"],                             skills:["Other"],                                                   linkedin:"https://linkedin.com/in/malte-lindigkeit" },
-  { name:"Alex",                   status:"exploring", interests:["Tenders","Buildings","AI"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/noackalexander" },
-  { name:"Tomi Unger",             status:"exploring", interests:["AI","GTM","Fintech"],                              skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/tomi-unger" },
-  { name:"Darius Dresp",           status:"idea",      interests:["Procuretech AI"],                                  skills:["Product/UX Design"],                                       linkedin:"https://linkedin.com/in/dariusdresp" },
-  { name:"Ashok Vasudevan",        status:"exploring", interests:["Fintech","IoT"],                                   skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/mailashokv" },
-  { name:"Laura Pérez",            status:"idea",      interests:["FemTech","AI","Digital Health","Wearables"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/laura-andrea-perez-lozano-5377721a8" },
-  { name:"Anish Gaurav",           status:"exploring", interests:["FinTech"],                                         skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/anishgaurav" },
-  { name:"Giuseppe Montagner",     status:"idea",      interests:["Fintech B2B","AI","B2C"],                          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/giuseppe-montagner" },
-  { name:"Laura Ruiz",             status:"idea",      interests:["Healthtech","Consumer Goods"],                     skills:["Product/UX Design"],                                       linkedin:"https://linkedin.com/in/lauraruiz-medina" },
-  { name:"Aishani",                status:"exploring", interests:["Construction","Sustainability","Healthcare"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/aishani-grover" },
-  { name:"Cedric Kopp",            status:"exploring", interests:["AI"],                                              skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/cedrickopp" },
-  { name:"Leonardo Bressan",       status:"idea",      interests:["AI","Procurement"],                                skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/leonardo-bressan-profile" },
-  { name:"Vaibhav Jain",           status:"idea",      interests:["Sustainability","AI","AgriTech","B2B SaaS"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/vaibhavjain1626" },
+  { name:"Johannes Gaese",          status:"exploring", interests:["Sustainability","Tech","AI"],                       skills:["Technical/Engineering","Product/UX Design"],               linkedin:"https://linkedin.com/in/johannes-gaese-8929b3193" },
+  { name:"Jesper Morgenstern",       status:"idea",      interests:["AI Agents","Process Optimization","Enterprise"],    skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jesper-morgenstern-012503293" },
+  { name:"Myriam Rapior",            status:"exploring", interests:["AI","Climate Risk","Sustainability"],               skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/myriamrapior" },
+  { name:"Sarah Rahmadanty Nasution",status:"joining",   interests:["SMEs","Sustainability","Manufacturing"],            skills:["Business/Marketing","Product/UX Design","Technical/Engineering"], linkedin:"https://linkedin.com/in/sarahnasution" },
+  { name:"Jasmin Mantwill",          status:"exploring", interests:["Consumer Goods","Healthtech","Sustainability"],     skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jasmin-mantwill-08669a27b" },
+  { name:"Nirmalendu Kuanr",         status:"joining",   interests:["Sustainability","Climate Tech","Textiles","Chemical Industry"], skills:["Technical/Engineering","Business/Marketing"],  linkedin:"https://linkedin.com/in/nirmalendukuanr" },
+  { name:"Göktürk Ege Sert",         status:"exploring", interests:["AI","Deep Tech","VC"],                              skills:["Technical/Engineering","Product/UX Design"],               linkedin:"https://linkedin.com/in/gokturk-ege-sert-001e" },
+  { name:"Tayyab Rana",              status:"joining",   interests:["AI","Sustainability"],                              skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/tayyab-rana2190" },
+  { name:"Luis",                     status:"exploring", interests:["AI"],                                               skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/luis-yariguay-216050b2" },
+  { name:"Deniz Sebik",              status:"exploring", interests:["Community","Partnerships","Sales"],                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/DenizSebik" },
+  { name:"Henrik Heßlau",            status:"exploring", interests:["AI"],                                               skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/henrik-hesslau" },
+  { name:"Tommaso Topa",             status:"joining",   interests:["Robotics","Healthcare","AI"],                       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/tommasotopa" },
+  { name:"Mahsa",                    status:"exploring", interests:["Sustainability","Digital Twin","Real Estate"],      skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/mahsa-amiri-moghaddam" },
+  { name:"Aloka Kumar Sahu",         status:"exploring", interests:["Sustainability","Climate Tech"],                    skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/alokakumarsahu01" },
+  { name:"Dimitris Papadopoulos",    status:"exploring", interests:["Consumer Tech","Climate Tech","AI"],                skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/dimitirs-gp-papadopoulos" },
+  { name:"Marion",                   status:"idea",      interests:["FemTech"],                                         skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/mpierfitte" },
+  { name:"Ganesh Thorbole",          status:"idea",      interests:["AI","Pharma"],                                     skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/ganesh-thorbole-56a08a7a" },
+  { name:"Kunal Dhabhai",            status:"idea",      interests:["Agentic Operations Platform"],                     skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/kunaldhabhai" },
+  { name:"Antonia Steinmann",        status:"idea",      interests:["AI SaaS","ProductLens"],                           skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/antonia-steinmann-1a23b0166" },
+  { name:"Flemming",                 status:"exploring", interests:["Sustainable Finance","AI"],                        skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/flemming-fischer" },
+  { name:"Marc-Lorenz Döhmer",       status:"exploring", interests:["Robotics","Heavy Industry"],                       skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/mldoehmer" },
+  { name:"Maxime Knof",              status:"idea",      interests:["Biotech","ML","Prediction Algorithms"],            skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/maxime-knof-093574193" },
+  { name:"Wynand Viljoen",           status:"exploring", interests:["AI","Venture Building","Strategy"],                skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/wynandviljoen" },
+  { name:"Danny Schwenke",           status:"idea",      interests:["AI","HealthTech","Fitness & Sports"],              skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/danny-schwenke-5385ab357" },
+  { name:"Leonard Weihe",            status:"exploring", interests:["Consumer Goods","Finance","Operations"],           skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/leonard-j-weihe" },
+  { name:"Jason Thrasher",           status:"idea",      interests:["Climate Modeling"],                                skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jasonthrasher" },
+  { name:"Giacomo Rossato",          status:"exploring", interests:["Digital Healthcare"],                              skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/giacomorossato" },
+  { name:"Gaurav",                   status:"exploring", interests:["SaaS","Fintech","Venture Capital"],                skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/gauravjha1995" },
+  { name:"Ziying Fang",              status:"idea",      interests:["AI Agent for B2B Marketing"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/ziying-fang" },
+  { name:"Hassan Taheri",            status:"exploring", interests:["AI","SaaS","Sovereign AI","GDPR Tech"],            skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/hassan-taheri-608052398" },
+  { name:"Julius",                   status:"joining",   interests:["Agentic Economy","GTM & Revenue Ops","B2B SaaS"], skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliusmichel" },
+  { name:"Shubham Verma",            status:"exploring", interests:["AI","Education","Health","Wellbeing"],             skills:["Product/UX Design","Technical/Engineering"],               linkedin:"https://linkedin.com/in/shubhamverma" },
+  { name:"Gaurav Anand",             status:"idea",      interests:["Sustainable Mobility"],                            skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/anandgrv" },
+  { name:"Yash Thadani",             status:"exploring", interests:["SaaS"],                                            skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/yashthadani" },
+  { name:"Jonathan Sueldo Guevara",  status:"idea",      interests:["Gastro Optimization","AI"],                       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jonathan-sueldo-guevara-ratzeburg-1668341b4" },
+  { name:"Jonatan Kronander",        status:"exploring", interests:["Healthcare","AI"],                                 skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jonatan-kronander-58ab01b6" },
+  { name:"Koray Tekin",              status:"idea",      interests:["Design with AI"],                                  skills:["Product/UX Design","Business/Marketing"],                  linkedin:"https://linkedin.com/in/koraytekin" },
+  { name:"Alexey Bityukov",          status:"exploring", interests:["Data Intelligence","Distributed Systems","Fintech"],skills:["Technical/Engineering"],                                  linkedin:"https://linkedin.com/in/alexey-bityukov" },
+  { name:"Thinh Porrmann",           status:"exploring", interests:["Fintech","AI"],                                    skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/thinh-porrmann" },
+  { name:"Weng Ian Ng",              status:"idea",      interests:["Fashion","Tech","International Trading"],          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/wengianng" },
+  { name:"Enrico Tritto",            status:"exploring", interests:["Fintech","Sustainability"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/enricotritto" },
+  { name:"Pranshul Saxena",          status:"exploring", interests:["AI","FinTech","Enterprise SaaS"],                  skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/pranshulsaxena" },
+  { name:"Valentina Vergara",        status:"idea",      interests:["Software Engineering","Machine Learning"],         skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/valentina-vergara-stange-27598b296" },
+  { name:"Ellen Grösel",             status:"idea",      interests:["Stealth"],                                         skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/ellen-pia-grösel-" },
+  { name:"Athanasios Manios",        status:"idea",      interests:["CommunityTech"],                                   skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/athanasios-manios-3baa6625a" },
+  { name:"Sebastian Schmid",         status:"exploring", interests:["Health-Tech","AI","Data Analytics"],               skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/sebastian-florian-schmid" },
+  { name:"Gwyneth-Tyger Neumann",    status:"idea",      interests:["BeautyTech","Wellness","Fashion"],                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/gtcneumann" },
+  { name:"Georgios Zelenitsas",      status:"idea",      interests:["FinTech","AI","Defence"],                          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/giorgoszelenitsas" },
+  { name:"Santiago Sierra",          status:"exploring", interests:["AI","Robotics"],                                   skills:["Product/UX Design","Technical/Engineering"],               linkedin:"https://linkedin.com/in/santiagosierraiba" },
+  { name:"David",                    status:"idea",      interests:["Music Marketing"],                                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/david-szabados-607541334" },
+  { name:"Nikhil Bajpai",            status:"exploring", interests:["AI"],                                              skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/bajpainikhil" },
+  { name:"Daniel",                   status:"idea",      interests:["Hardware Development"],                            skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/daniel-kehr-3b0398235" },
+  { name:"Jannis Duckek",            status:"joining",   interests:["Deeptech","Climate Tech","Sustainability"],        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jannisduckek" },
+  { name:"Benjamin Kapell",          status:"idea",      interests:["IoT","Travel Tech","Hardware-Software","Mobile"],  skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/benjamin-kapell-10438a112" },
+  { name:"Juliette Gainnet",         status:"joining",   interests:["Climate Tech","Health Tech"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliette-gainnet" },
+  { name:"Leon Marco Cavallo",       status:"idea",      interests:["Sustainability","Climatetech","Machine Learning"],  skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/leon-marco-cavallo" },
+  { name:"Sophia Pettit",            status:"exploring", interests:["Social Impact","AI","Entertainment & Culture"],    skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/sophia-pettit" },
+  { name:"Malte Lindigkeit",         status:"exploring", interests:["LegalTech","Patents"],                             skills:["Other"],                                                   linkedin:"https://linkedin.com/in/malte-lindigkeit" },
+  { name:"Alex",                     status:"exploring", interests:["Tenders","Buildings","AI"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/noackalexander" },
+  { name:"Tomi Unger",               status:"exploring", interests:["AI","GTM","Fintech"],                              skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/tomi-unger" },
+  { name:"Darius Dresp",             status:"idea",      interests:["Procuretech AI"],                                  skills:["Product/UX Design"],                                       linkedin:"https://linkedin.com/in/dariusdresp" },
+  { name:"Ashok Vasudevan",          status:"exploring", interests:["Fintech","IoT"],                                   skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/mailashokv" },
+  { name:"Laura Pérez",              status:"idea",      interests:["FemTech","AI","Digital Health","Wearables"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/laura-andrea-perez-lozano-5377721a8" },
+  { name:"Anish Gaurav",             status:"exploring", interests:["FinTech"],                                         skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/anishgaurav" },
+  { name:"Giuseppe Montagner",       status:"idea",      interests:["Fintech B2B","AI","B2C"],                          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/giuseppe-montagner" },
+  { name:"Laura Ruiz",               status:"idea",      interests:["Healthtech","Consumer Goods"],                     skills:["Product/UX Design"],                                       linkedin:"https://linkedin.com/in/lauraruiz-medina" },
+  { name:"Aishani",                  status:"exploring", interests:["Construction","Sustainability","Healthcare"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/aishani-grover" },
+  { name:"Cedric Kopp",              status:"exploring", interests:["AI"],                                              skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/cedrickopp" },
+  { name:"Leonardo Bressan",         status:"idea",      interests:["AI","Procurement"],                                skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/leonardo-bressan-profile" },
+  { name:"Vaibhav Jain",             status:"idea",      interests:["Sustainability","AI","AgriTech","B2B SaaS"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/vaibhavjain1626" },
 ];
 
 // Sort alphabetically by first name
@@ -559,7 +562,7 @@ TOPIC_GROUPS.forEach(g => {
   const btn = document.createElement('button');
   btn.className = 'pill topic';
   btn.textContent = `${g.label}`;
-  btn.title = `${count} attendees`;
+  btn.title = g.label;
   btn.onclick = () => toggleTopic(g.label, btn);
   topicContainer.appendChild(btn);
 });
@@ -577,7 +580,7 @@ function applyFilters() {
     c.classList.toggle('hidden', !show);
     if (show) visible++;
   });
-  document.getElementById('count').textContent = `${visible} of ${people.length} attendees`;
+
   // Show clear button if any non-default filter is active
   const dirty = activeRole !== 'all' || activeStatus !== 'all' || activeTopics.size > 0;
   document.getElementById('clear-btn').classList.toggle('visible', dirty);
