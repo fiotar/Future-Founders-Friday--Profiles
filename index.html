@@ -319,6 +319,69 @@ body {
 .footer-text strong { color: rgba(238,237,248,0.65); }
 .footer-mono { font-family: 'Space Mono', monospace; font-size: 10px; color: rgba(126,125,150,0.4); letter-spacing: 0.08em; }
 
+/* ─── SEARCH ─── */
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 380px;
+}
+.search-icon {
+  position: absolute;
+  left: 12px;
+  width: 15px; height: 15px;
+  color: var(--muted);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.search-input {
+  width: 100%;
+  padding: 8px 36px 8px 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.07);
+}
+.search-clear {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  display: none;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.search-clear:hover { color: var(--text); }
+.search-clear.visible { display: block; }
+
+/* No results message */
+.no-results {
+  display: none;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.no-results strong { color: var(--text); display: block; font-size: 18px; margin-bottom: 8px; }
+.no-results.visible { display: block; }
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 680px) {
   .hero-sub-bar { padding: 18px 24px 22px; }
@@ -359,13 +422,24 @@ body {
     <span class="filter-label">Interests</span>
     <div id="topic-pills" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
   </div>
+  <div class="filter-row">
+    <span class="filter-label">Search</span>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <input id="search-input" class="search-input" type="text" placeholder="Search by name… typos are fine" oninput="onSearch(this.value)" autocomplete="off" spellcheck="false">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">&#x2715;</button>
+    </div>
+  </div>
   <div class="toolbar-footer">
-    <button class="clear-btn" id="clear-btn" onclick="clearAll()">✕ Clear all filters</button>
+    <button class="clear-btn" id="clear-btn" onclick="clearAll()">&#x2715; Clear all filters</button>
   </div>
 </div>
 
 <!-- GRID -->
-<div class="grid" id="grid"></div>
+<div class="grid" id="grid"><div class="no-results" id="no-results"><strong>No one found</strong>Try a different spelling — or check the filters above.</div></div>
 
 <!-- PAGE FOOTER -->
 <div class="page-footer">
@@ -377,7 +451,10 @@ body {
 const LI = `<svg class="li-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
 
 const people = [
-  { name:"Johannes Gaese",          status:"exploring", interests:["Sustainability","Tech","AI"],                       skills:["Technical/Engineering","Product/UX Design"],               linkedin:"https://linkedin.com/in/johannes-gaese-8929b3193" },
+  { name:"Manav Jajodia",            status:"joining",   interests:["Food & Beverage"],                                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/manavjajodia0304" },
+  { name:"Viacheslav Iankovyi",      status:"idea",      interests:["AI","Computer Vision"],                            skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/viacheslaviankovyi" },
+  { name:"Jeremy Seal",              status:"joining",   interests:["AI B2B","Ways of Working","Physical AI"],          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jeremyeseal" },
+  { name:"Johannes Gaese",           status:"exploring", interests:["Sustainability","Tech","AI"],                       skills:["Technical/Engineering","Product/UX Design"],               linkedin:"https://linkedin.com/in/johannes-gaese-8929b3193" },
   { name:"Jesper Morgenstern",       status:"idea",      interests:["AI Agents","Process Optimization","Enterprise"],    skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jesper-morgenstern-012503293" },
   { name:"Myriam Rapior",            status:"exploring", interests:["AI","Climate Risk","Sustainability"],               skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/myriamrapior" },
   { name:"Sarah Rahmadanty Nasution",status:"joining",   interests:["SMEs","Sustainability","Manufacturing"],            skills:["Business/Marketing","Product/UX Design","Technical/Engineering"], linkedin:"https://linkedin.com/in/sarahnasution" },
@@ -408,11 +485,10 @@ const people = [
   { name:"Ziying Fang",              status:"idea",      interests:["AI Agent for B2B Marketing"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/ziying-fang" },
   { name:"Hassan Taheri",            status:"exploring", interests:["AI","SaaS","Sovereign AI","GDPR Tech"],            skills:["Business/Marketing","Technical/Engineering"],              linkedin:"https://linkedin.com/in/hassan-taheri-608052398" },
   { name:"Julius",                   status:"joining",   interests:["Agentic Economy","GTM & Revenue Ops","B2B SaaS"], skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliusmichel" },
-  { name:"Shubham Verma",            status:"exploring", interests:["AI","Education","Health","Wellbeing"],             skills:["Product/UX Design","Technical/Engineering"],               linkedin:"https://linkedin.com/in/shubhamverma" },
   { name:"Gaurav Anand",             status:"idea",      interests:["Sustainable Mobility"],                            skills:["Technical/Engineering","Business/Marketing"],              linkedin:"https://linkedin.com/in/anandgrv" },
   { name:"Yash Thadani",             status:"exploring", interests:["SaaS"],                                            skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/yashthadani" },
-  { name:"Jonathan Sueldo Guevara",  status:"idea",      interests:["Gastro Optimization","AI"],                       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jonathan-sueldo-guevara-ratzeburg-1668341b4" },
-  { name:"Jonatan Kronander",        status:"exploring", interests:["Healthcare","AI"],                                 skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jonatan-kronander-58ab01b6" },
+  { name:"Jonathan Sueldo Guevara",  status:"idea",      interests:["Gastro Optimization","AI"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jonathan-sueldo-guevara-ratzeburg-1668341b4" },
+  { name:"Jonatan Kronander",        status:"exploring", interests:["Healthcare","AI"],                                  skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/jonatan-kronander-58ab01b6" },
   { name:"Koray Tekin",              status:"idea",      interests:["Design with AI"],                                  skills:["Product/UX Design","Business/Marketing"],                  linkedin:"https://linkedin.com/in/koraytekin" },
   { name:"Alexey Bityukov",          status:"exploring", interests:["Data Intelligence","Distributed Systems","Fintech"],skills:["Technical/Engineering"],                                  linkedin:"https://linkedin.com/in/alexey-bityukov" },
   { name:"Thinh Porrmann",           status:"exploring", interests:["Fintech","AI"],                                    skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/thinh-porrmann" },
@@ -432,7 +508,6 @@ const people = [
   { name:"Jannis Duckek",            status:"joining",   interests:["Deeptech","Climate Tech","Sustainability"],        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jannisduckek" },
   { name:"Benjamin Kapell",          status:"idea",      interests:["IoT","Travel Tech","Hardware-Software","Mobile"],  skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/benjamin-kapell-10438a112" },
   { name:"Juliette Gainnet",         status:"joining",   interests:["Climate Tech","Health Tech"],                      skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/juliette-gainnet" },
-  { name:"Leon Marco Cavallo",       status:"idea",      interests:["Sustainability","Climatetech","Machine Learning"],  skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/leon-marco-cavallo" },
   { name:"Sophia Pettit",            status:"exploring", interests:["Social Impact","AI","Entertainment & Culture"],    skills:["Business/Marketing","Product/UX Design"],                  linkedin:"https://linkedin.com/in/sophia-pettit" },
   { name:"Malte Lindigkeit",         status:"exploring", interests:["LegalTech","Patents"],                             skills:["Other"],                                                   linkedin:"https://linkedin.com/in/malte-lindigkeit" },
   { name:"Alex",                     status:"exploring", interests:["Tenders","Buildings","AI"],                        skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/noackalexander" },
@@ -523,6 +598,7 @@ people.forEach(p => {
   card.dataset.color  = color;
   card.dataset.status = p.status;
   card.dataset.topics = p.topicGroups.join('|');
+  card.dataset.name  = p.name;
   card.innerHTML = `
     <div class="stripe"></div>
     <div class="card-top">
@@ -567,8 +643,55 @@ TOPIC_GROUPS.forEach(g => {
   topicContainer.appendChild(btn);
 });
 
-// ── Filter logic ──
+// ── Fuzzy search (Levenshtein distance) ──
+let searchQuery = '';
 
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => j === 0 ? i : 0));
+  for (let j = 1; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function fuzzyMatch(query, name) {
+  if (!query) return true;
+  const q = query.toLowerCase().trim();
+  const n = name.toLowerCase();
+  // Exact substring match first
+  if (n.includes(q)) return true;
+  // Check each word in the name against the query
+  const words = n.split(/\s+/);
+  for (const word of words) {
+    const maxDist = q.length <= 3 ? 1 : q.length <= 6 ? 2 : 3;
+    // Check prefix match (allows typing partial names)
+    if (word.startsWith(q)) return true;
+    // Fuzzy match against the word or start of word
+    const slice = word.slice(0, q.length + 1);
+    if (levenshtein(q, slice) <= maxDist) return true;
+    if (levenshtein(q, word) <= maxDist) return true;
+  }
+  return false;
+}
+
+function onSearch(val) {
+  searchQuery = val;
+  const clearBtn = document.getElementById('search-clear');
+  clearBtn.classList.toggle('visible', val.length > 0);
+  applyFilters();
+}
+
+function clearSearch() {
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  applyFilters();
+}
+
+// ── Filter logic ──
 function applyFilters() {
   let visible = 0;
   document.querySelectorAll('.card').forEach(c => {
@@ -576,13 +699,17 @@ function applyFilters() {
     const statusOk = activeStatus === 'all' || c.dataset.status === activeStatus;
     const topicOk  = activeTopics.size === 0 ||
       [...activeTopics].some(t => (c.dataset.topics||'').includes(t));
-    const show = roleOk && statusOk && topicOk;
+    const searchOk = fuzzyMatch(searchQuery, c.dataset.name || '');
+    const show = roleOk && statusOk && topicOk && searchOk;
     c.classList.toggle('hidden', !show);
     if (show) visible++;
   });
 
-  // Show clear button if any non-default filter is active
-  const dirty = activeRole !== 'all' || activeStatus !== 'all' || activeTopics.size > 0;
+  // No results message
+  document.getElementById('no-results').classList.toggle('visible', visible === 0);
+
+  // Clear button
+  const dirty = activeRole !== 'all' || activeStatus !== 'all' || activeTopics.size > 0 || searchQuery.length > 0;
   document.getElementById('clear-btn').classList.toggle('visible', dirty);
 }
 
@@ -617,6 +744,7 @@ function clearAll() {
   activeRole   = 'all';
   activeStatus = 'all';
   activeTopics.clear();
+  clearSearch();
   document.querySelectorAll('.pill.f-all')[0].classList.add('active');
   document.querySelectorAll('.pill.f-biz, .pill.f-tech, .pill.f-design').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.pill.s-all')[0].classList.add('active');
