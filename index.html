@@ -24,6 +24,9 @@
   --tech-border: rgba(91,157,248,0.28);
 
   --design:        #c084fc;
+  --expert:        #22c55e;
+  --expert-dim:    rgba(34,197,94,0.13);
+  --expert-border: rgba(34,197,94,0.3);
   --design-dim:    rgba(192,132,252,0.13);
   --design-border: rgba(192,132,252,0.28);
 }
@@ -116,6 +119,7 @@ body {
 .pill.active.s-idea      { background: #f5a623;     color: #0c0c13; border-color: transparent; }
 .pill.active.s-exploring { background: #4ecdc4;     color: #0c0c13; border-color: transparent; }
 .pill.active.s-joining   { background: #a8e063;     color: #0c0c13; border-color: transparent; }
+.pill.active.f-expert { background: var(--expert); color: #0c0c13; border-color: transparent; }
 
 .pill.topic { padding: 5px 13px; font-size: 12px; }
 .pill.topic.active {
@@ -135,7 +139,8 @@ body {
 .pill .biz-dot    { background: var(--biz); }
 .pill .tech-dot   { background: var(--tech); }
 .pill .design-dot { background: var(--design); }
-.pill.active .biz-dot, .pill.active .tech-dot, .pill.active .design-dot { background: #0c0c13; }
+.pill .expert-dot { background: var(--expert); }
+.pill.active .biz-dot, .pill.active .tech-dot, .pill.active .design-dot, .pill.active .expert-dot { background: #0c0c13; }
 
 .toolbar-footer {
   display: flex;
@@ -302,6 +307,14 @@ body {
 .card.biz    .li-btn { background: var(--biz-dim);    color: var(--biz);    border-color: var(--biz-border); }
 .card.tech   .li-btn { background: var(--tech-dim);   color: var(--tech);   border-color: var(--tech-border); }
 .card.design .li-btn { background: var(--design-dim); color: var(--design); border-color: var(--design-border); }
+
+.card.expert .card-accent { background: linear-gradient(90deg, var(--expert), #16a34a); }
+.card.expert:hover { border-color: var(--expert-border); box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.1); }
+.card.expert .monogram { background: var(--expert-dim); color: var(--expert); border: 1px solid var(--expert-border); }
+.card.expert .card-cat { color: var(--expert); }
+.card.expert .tag.interest { background: var(--expert-dim); color: var(--expert); border: 1px solid var(--expert-border); }
+.card.expert .li-btn { background: var(--expert-dim); color: var(--expert); border-color: var(--expert-border); }
+
 .li-icon { width: 13px; height: 13px; flex-shrink: 0; }
 
 /* ─── PAGE FOOTER ─── */
@@ -410,6 +423,7 @@ body {
     <button class="pill f-biz"           onclick="setRole('biz',this)"><span class="pill-dot biz-dot"></span>Business</button>
     <button class="pill f-tech"          onclick="setRole('tech',this)"><span class="pill-dot tech-dot"></span>Technical</button>
     <button class="pill f-design"        onclick="setRole('design',this)"><span class="pill-dot design-dot"></span>Design</button>
+    <button class="pill f-expert"        onclick="setRole('expert',this)"><span class="pill-dot expert-dot"></span>Expert / Moderator</button>
   </div>
   <div class="filter-row">
     <span class="filter-label">Status</span>
@@ -451,6 +465,11 @@ body {
 const LI = `<svg class="li-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
 
 const people = [
+  { name:"Alexandra Hörndl",      expert:true, status:"expert", interests:["Artificial Intelligence"],                                    skills:["Expert / Moderator"], linkedin:"https://www.linkedin.com/in/alexandra-hoerndl/",            role:"VC @ Antler" },
+  { name:"Helmut Kranzmaier",     expert:true, status:"expert", interests:["FinTech","Corporate Innovation"],                             skills:["Expert / Moderator"], linkedin:"https://www.linkedin.com/in/helmut-kranzmaier-6464aa4/",    role:"Senior Advisor · Corporate Innovation & Financial Services" },
+  { name:"Ingo Kloeckner",        expert:true, status:"expert", interests:["Healthcare","Life Sciences"],                                  skills:["Expert / Moderator"], linkedin:"https://www.linkedin.com/in/ingo-kloeckner/",               role:"Head of Portfolio Strategy & Reporting · Leaps by Bayer" },
+  { name:"Nils Herrmann",         expert:true, status:"expert", interests:["AgriFood","Deep Tech Innovation"],                            skills:["Expert / Moderator"], linkedin:"https://www.linkedin.com/in/nils-arne-herrmann-91336112/",  role:"Stream Lead · Creative Destruction Lab" },
+  { name:"Dr. Ramana Gudipudi",   expert:true, status:"expert", interests:["Science","Sustainability"],                                   skills:["Expert / Moderator"], linkedin:"https://www.linkedin.com/in/dr-ramana-gudipudi/",           role:"Founding Member · The Sustainability Circle" },
   { name:"Manav Jajodia",            status:"joining",   interests:["Food & Beverage"],                                 skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/manavjajodia0304" },
   { name:"Viacheslav Iankovyi",      status:"idea",      interests:["AI","Computer Vision"],                            skills:["Technical/Engineering"],                                   linkedin:"https://linkedin.com/in/viacheslaviankovyi" },
   { name:"Jeremy Seal",              status:"joining",   interests:["AI B2B","Ways of Working","Physical AI"],          skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/jeremyeseal" },
@@ -524,10 +543,15 @@ const people = [
   { name:"Vaibhav Jain",             status:"idea",      interests:["Sustainability","AI","AgriTech","B2B SaaS"],       skills:["Business/Marketing"],                                      linkedin:"https://linkedin.com/in/vaibhavjain1626" },
 ];
 
-// Sort alphabetically by first name
-people.sort((a,b) => a.name.localeCompare(b.name));
+// Experts first, then alphabetically
+people.sort((a,b) => {
+  if (a.expert && !b.expert) return -1;
+  if (!a.expert && b.expert) return 1;
+  return a.name.localeCompare(b.name);
+});
 
-function getColor(skills) {
+function getColor(skills, isExpert) {
+  if (isExpert) return 'expert';
   const biz    = skills.some(s => s.includes('Business'));
   const tech   = skills.some(s => s.includes('Technical'));
   const design = skills.some(s => s.includes('UX') || s.includes('Design'));
@@ -539,7 +563,10 @@ function getColor(skills) {
 }
 
 function catLabel(c) {
-  return c==='tech' ? 'Technical / Engineering' : c==='design' ? 'Design / UX' : 'Business / Marketing';
+  if (c==='tech') return 'Technical / Engineering';
+  if (c==='design') return 'Design / UX';
+  if (c==='expert') return 'Expert / Moderator';
+  return 'Business / Marketing';
 }
 
 function initials(name) {
@@ -550,6 +577,7 @@ const STATUS_MAP = {
   idea:      { icon:'💡', label:'Has a business idea · Seeking co-founders' },
   exploring: { icon:'🔭', label:'Exploring entrepreneurship · Open to collaborating' },
   joining:   { icon:'🤝', label:'Looking to join a founding team' },
+  expert:    { icon:'🎙', label:'Expert Moderator' },
 };
 
 function skillLabel(s) {
@@ -587,7 +615,7 @@ people.forEach(p => {
 
 // ── Build cards ──
 people.forEach(p => {
-  const color = getColor(p.skills);
+  const color = getColor(p.skills, p.expert === true);
   const st = STATUS_MAP[p.status] || STATUS_MAP.exploring;
   const mono = initials(p.name);
   const interestTags = p.interests.slice(0,5).map(i=>`<span class="tag interest">${i}</span>`).join('');
@@ -611,7 +639,7 @@ people.forEach(p => {
     <div class="card-body">
       <div class="status-row">
         <span class="status-icon">${st.icon}</span>
-        <span>${st.label}</span>
+        <span>${p.expert ? (p.role || st.label) : st.label}</span>
       </div>
       <div class="section">
         <div class="section-label">Interests</div>
@@ -714,7 +742,7 @@ function applyFilters() {
 }
 
 function setRole(val, btn) {
-  document.querySelectorAll('.pill.f-all, .pill.f-biz, .pill.f-tech, .pill.f-design')
+  document.querySelectorAll('.pill.f-all, .pill.f-biz, .pill.f-tech, .pill.f-design, .pill.f-expert')
     .forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeRole = val;
@@ -746,7 +774,7 @@ function clearAll() {
   activeTopics.clear();
   clearSearch();
   document.querySelectorAll('.pill.f-all')[0].classList.add('active');
-  document.querySelectorAll('.pill.f-biz, .pill.f-tech, .pill.f-design').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pill.f-biz, .pill.f-tech, .pill.f-design, .pill.f-expert').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.pill.s-all')[0].classList.add('active');
   document.querySelectorAll('.pill.s-idea, .pill.s-exploring, .pill.s-joining').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.pill.topic').forEach(b => b.classList.remove('active'));
